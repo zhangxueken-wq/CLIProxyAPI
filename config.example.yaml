@@ -134,12 +134,30 @@ pricing:
   database-table: billing_ledger
   revision: "example-2026-09"
   rate-multiplier: 1
+  # Official Anthropic API list prices, expressed in USD per token.
+  # Cache reads are 10% of input; cache writes use the 5-minute 1.25x rate.
+  # Update the revision and rules when Anthropic changes its price card.
   default:
     input-per-token: 0
     output-per-token: 0
     cache-read-per-token: 0
     cache-write-per-token: 0
-  rules: []
+  rules:
+    - model: "claude-opus-*"
+      input-per-token: 0.000015
+      output-per-token: 0.000075
+      cache-read-per-token: 0.0000015
+      cache-write-per-token: 0.00001875
+    - model: "claude-sonnet-*"
+      input-per-token: 0.000003
+      output-per-token: 0.000015
+      cache-read-per-token: 0.0000003
+      cache-write-per-token: 0.00000375
+    - model: "claude-haiku-*"
+      input-per-token: 0.000001
+      output-per-token: 0.000005
+      cache-read-per-token: 0.0000001
+      cache-write-per-token: 0.00000125
 
 # Claude credentials are tried in round-robin order when an upstream request
 # fails. Enable extra retry rounds for transient failures and exhausted keys.
