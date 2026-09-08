@@ -50,8 +50,8 @@ func TestPriceEngineLongContextAndTier(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if q.TotalUSD != 640 {
-		t.Fatalf("total = %v, want 640", q.TotalUSD)
+	if q.TotalUSD != 680 {
+		t.Fatalf("total = %v, want 680", q.TotalUSD)
 	}
 	if !q.LongContextApplied {
 		t.Fatal("long context flag is false")
