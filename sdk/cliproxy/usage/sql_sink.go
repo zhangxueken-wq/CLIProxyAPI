@@ -45,7 +45,9 @@ func (s *SQLChargeSink) Aggregate(ctx context.Context) ([]AccountTotal, error) {
 	}
 	query := fmt.Sprintf(`SELECT COALESCE(NULLIF(usage_record->>'AuthID',''), NULLIF(usage_record->>'auth_id',''), NULLIF(api_key_sha256,''), 'unknown') AS account,
 COUNT(*)::BIGINT, COALESCE(SUM(input_tokens),0), COALESCE(SUM(output_tokens),0), COALESCE(SUM(cache_read_tokens),0), COALESCE(SUM(cache_write_tokens),0), COALESCE(SUM(total_tokens),0), COALESCE(SUM(amount_micros),0), COALESCE(SUM(total_usd),0)
-FROM %s GROUP BY 1 ORDER BY 1`, s.tableName())
+FROM %s
+WHERE LOWER(provider) = 'claude' OR LOWER(provider) = 'anthropic' OR LOWER(provider) LIKE '%%claude%%'
+GROUP BY 1 ORDER BY 1`, s.tableName())
 	rows, err := s.DB.QueryContext(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("sql charge sink: aggregate: %w", err)

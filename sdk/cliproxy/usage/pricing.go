@@ -297,7 +297,7 @@ type PricingPlugin struct {
 }
 
 func (p *PricingPlugin) HandleUsage(ctx context.Context, record Record) {
-	if p == nil || p.Engine == nil || p.Sink == nil || record.Failed {
+	if p == nil || p.Engine == nil || p.Sink == nil || record.Failed || !IsClaudeProvider(record.Provider) {
 		return
 	}
 	rate := p.RateMultiplier
@@ -329,6 +329,13 @@ func (p *PricingPlugin) HandleUsage(ctx context.Context, record Record) {
 	if p.Totals != nil {
 		p.Totals.Add(charge)
 	}
+}
+
+// IsClaudeProvider reports whether a usage record belongs to the Claude/Anthropic upstream.
+// Billing is intentionally scoped to Claude; all other providers are ignored.
+func IsClaudeProvider(provider string) bool {
+	p := strings.ToLower(strings.TrimSpace(provider))
+	return p == "claude" || p == "anthropic" || strings.Contains(p, "claude")
 }
 
 func StableBillingEventID(requestID string, record Record) string {
