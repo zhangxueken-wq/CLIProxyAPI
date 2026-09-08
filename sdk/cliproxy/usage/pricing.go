@@ -193,7 +193,7 @@ func (e *PriceEngine) quote(model string, detail Detail, provider, executorType 
 	}
 	input, output, read, write := b.Input.UncachedTokens, b.Output.TotalTokens, b.Input.CacheReadTokens, b.Input.CacheWriteTokens
 	inputMul, outputMul := 1.0, 1.0
-	contextTokens := b.Input.TotalTokens
+	contextTokens := b.TotalTokens
 	if lc := card.LongContext; lc != nil && lc.Threshold > 0 && ((lc.Inclusive && contextTokens >= lc.Threshold) || (!lc.Inclusive && contextTokens > lc.Threshold)) {
 		inputMul, outputMul = positiveOrOne(lc.InputMultiplier), positiveOrOne(lc.OutputMultiplier)
 	}
